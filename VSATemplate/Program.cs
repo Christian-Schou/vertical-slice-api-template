@@ -5,8 +5,8 @@ var assembly = typeof(Program).Assembly;
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.
-    AddSQLDatabaseConfiguration(builder.Configuration)
+builder.Services
+    .AddSQLDatabaseConfiguration(builder.Configuration)
     .AddMediatRConfiguration(assembly)
     .AddValidatorsFromAssembly(assembly)
     .AddCarter()
