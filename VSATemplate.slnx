@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="VSATemplate/VSATemplate.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="VSATemplate.Tests/VSATemplate.Tests.csproj" />
+  </Folder>
+</Solution>
