@@ -1,6 +1,6 @@
 # Vertical Slice Architecture Template
 
-This repository provides a template for building applications using the Vertical Slice Architecture with .NET 9. It includes implementations for CQRS, MediatR, global exception handling, Carter library, FluentValidation, EF Core, and the result pattern.
+This repository provides a template for building applications using the Vertical Slice Architecture with .NET 10. It includes implementations for CQRS, MediatR, global exception handling, Carter library, FluentValidation, EF Core, and the result pattern.
 
 ## Table of Contents
 
@@ -20,7 +20,7 @@ To get a local copy up and running, follow these simple steps.
 
 ### Prerequisites
 
-- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
 
 ### Installation
 
@@ -54,7 +54,7 @@ This template follows the Vertical Slice Architecture, which organizes code by f
 
 ## Technologies Used
 
-- **.NET 8**
+- **.NET 10**
 - **CQRS**
 - **MediatR**
 - **Carter Library**
