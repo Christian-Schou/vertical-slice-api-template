@@ -1,10 +1,12 @@
 ﻿namespace VSATemplate.Features.Products.UpdateProduct;
+
 public sealed record UpdateProductCommand(
     Guid Id,
     string Name,
     string Description,
     List<string> Categories,
-    decimal Price) : ICommand<Result<UpdateProductResult>>;
+    decimal Price);
+
 public sealed record UpdateProductResult(bool IsSuccess);
 
 public sealed class UpdateProductCommandValidator :
@@ -20,15 +22,14 @@ public sealed class UpdateProductCommandValidator :
             .WithMessage("Description is required!");
         RuleFor(x => x.Price)
             .GreaterThan(0.0m)
-             .WithMessage("Price should be greater than zero!");
+            .WithMessage("Price should be greater than zero!");
         RuleFor(x => x.Categories)
             .Must(x => x == null || x.Any())
             .WithMessage("Categories should have atleast one category!");
     }
 }
 
-internal sealed class UpdateProductCommandHandler(ApplicationDbContext dbContext)
-    : ICommandHandler<UpdateProductCommand, Result<UpdateProductResult>>
+public sealed class UpdateProductCommandHandler(ApplicationDbContext dbContext)
 {
     public async Task<Result<UpdateProductResult>> Handle(UpdateProductCommand command,
         CancellationToken cancellationToken)
@@ -37,10 +38,7 @@ internal sealed class UpdateProductCommandHandler(ApplicationDbContext dbContext
             .Products
             .FirstOrDefaultAsync(p => p.Id == command.Id, cancellationToken);
 
-        if (product is null)
-        {
-            return Result.Failure<UpdateProductResult>(ProductErrors.NotFound(command.Id));
-        }
+        if (product is null) return Result.Fail<UpdateProductResult>(ProductErrors.NotFound(command.Id));
 
         product.Name = command.Name;
         product.Description = command.Description;

@@ -1,9 +1,11 @@
 ﻿namespace VSATemplate.Features.Products.CreateProduct;
+
 public sealed record CreateProductCommand(
     string Name,
     string Description,
     List<string> Categories,
-    decimal Price) : ICommand<Result<CreateProductResult>>;
+    decimal Price);
+
 public sealed record CreateProductResult(Guid Id);
 
 public sealed class CreateProductCommandValidator
@@ -19,15 +21,14 @@ public sealed class CreateProductCommandValidator
             .WithMessage("Description is required!");
         RuleFor(x => x.Price)
             .GreaterThan(0.0m)
-             .WithMessage("Price should be greater than zero!");
+            .WithMessage("Price should be greater than zero!");
         RuleFor(x => x.Categories)
             .Must(x => x == null || x.Any())
             .WithMessage("Categories should have at least one category!");
     }
 }
 
-internal sealed class CreateProductCommandHandler(ApplicationDbContext dbContext)
-   : ICommandHandler<CreateProductCommand, Result<CreateProductResult>>
+public sealed class CreateProductCommandHandler(ApplicationDbContext dbContext)
 {
     public async Task<Result<CreateProductResult>> Handle(CreateProductCommand command,
         CancellationToken cancellationToken)

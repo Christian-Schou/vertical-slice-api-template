@@ -1,9 +1,10 @@
 ﻿namespace VSATemplate.Features.Products.DeleteProduct;
-public sealed record DeleteProductCommand(Guid Id) : ICommand<Result<DeleteProductResult>>;
+
+public sealed record DeleteProductCommand(Guid Id);
+
 public sealed record DeleteProductResult(bool IsSuccess);
 
-internal sealed class DeleteProductCommandHandler(ApplicationDbContext dbContext)
-    : ICommandHandler<DeleteProductCommand, Result<DeleteProductResult>>
+public sealed class DeleteProductCommandHandler(ApplicationDbContext dbContext)
 {
     public async Task<Result<DeleteProductResult>> Handle(DeleteProductCommand command,
         CancellationToken cancellationToken)
@@ -12,10 +13,7 @@ internal sealed class DeleteProductCommandHandler(ApplicationDbContext dbContext
             .Products
             .FirstOrDefaultAsync(p => p.Id == command.Id, cancellationToken);
 
-        if (product is null)
-        {
-            return Result.Failure<DeleteProductResult>(ProductErrors.NotFound(command.Id));
-        }
+        if (product is null) return Result.Fail<DeleteProductResult>(ProductErrors.NotFound(command.Id));
 
         dbContext.Products.Remove(product);
 

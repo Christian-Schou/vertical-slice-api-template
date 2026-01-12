@@ -2,6 +2,9 @@
 
 public static class ProductErrors
 {
-    public static Error NotFound(Guid id) =>
-        new("Products.NotFound", $"The product with Id '{id}' was not found");
+    public static Error NotFound(Guid id)
+    {
+        return new Error($"The product with Id '{id}' was not found")
+            .WithMetadata("Code", "Products.NotFound");
+    }
 }
