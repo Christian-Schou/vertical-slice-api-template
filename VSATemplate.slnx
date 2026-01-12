@@ -1,8 +1,14 @@
 <Solution>
-  <Folder Name="/src/">
-    <Project Path="VSATemplate/VSATemplate.csproj" />
-  </Folder>
-  <Folder Name="/tests/">
-    <Project Path="VSATemplate.Tests/VSATemplate.Tests.csproj" />
-  </Folder>
+    <Folder Name="/solution items/">
+        <File Path="LICENSE.txt" />
+        <File Path="README.md" />
+    </Folder>
+    <Folder Name="/src/">
+        <Project Path="VSATemplate/VSATemplate.csproj" />
+    </Folder>
+    <Folder Name="/tests/">
+        <Project Path="VSATemplate.Architecture.Tests/VSATemplate.Architecture.Tests.csproj" />
+        <Project Path="VSATemplate.IntegrationTests/VSATemplate.IntegrationTests.csproj" />
+        <Project Path="VSATemplate.UnitTests/VSATemplate.UnitTests.csproj" />
+    </Folder>
 </Solution>
