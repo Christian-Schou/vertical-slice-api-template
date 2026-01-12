@@ -8,7 +8,7 @@ public sealed class Product
 
     public decimal Price { get; set; } = 0.0m;
 
-    public List<string> Categories { get; set; } = new();
+    public List<string> Categories { get; set; } = [];
 
-    public DateTime LastUpdatedOnUtc { get; set; }
+    public DateTimeOffset LastUpdatedOnUtc { get; set; }
 }
