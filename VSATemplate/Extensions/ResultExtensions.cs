@@ -1,4 +1,4 @@
-﻿﻿namespace VSATemplate.Extensions;
+﻿namespace VSATemplate.Extensions;
 
 public static class ResultExtensions
 {
