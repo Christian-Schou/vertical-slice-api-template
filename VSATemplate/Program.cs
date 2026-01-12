@@ -3,7 +3,7 @@ var builder = WebApplication.CreateBuilder(args);
 var assembly = typeof(Program).Assembly;
 
 
-builder.Host.UseWolverine(options => { options.UseFluentValidation(); });
+builder.Host.UseWolverine(WolverineConfiguration.Configure);
 
 builder.Services
     .AddInfrastructureServices(builder.Configuration)

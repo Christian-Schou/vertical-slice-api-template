@@ -1,4 +1,4 @@
-﻿global using Wolverine;
+﻿﻿global using Wolverine;
 global using Wolverine.FluentValidation;
 global using Carter;
 global using FluentValidation;
@@ -12,3 +12,4 @@ global using VSATemplate.Entities;
 global using VSATemplate.Extensions;
 global using FluentResults;
 global using VSATemplate.Exceptions;
+global using VSATemplate.Configurations;
