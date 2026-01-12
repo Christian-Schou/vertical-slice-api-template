@@ -2,17 +2,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 var assembly = typeof(Program).Assembly;
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 builder.Host.UseWolverine(options => { options.UseFluentValidation(); });
 
 builder.Services
-    .AddDatabaseServices(builder.Configuration)
-    .AddValidatorsFromAssembly(assembly)
-    .AddCarter()
-    .AddExceptionHandler<GlobalExceptionHandler>()
-    .AddHealthCheckServices();
+    .AddInfrastructureServices(builder.Configuration)
+    .AddApplicationServices(assembly);
+
 
 var app = builder.Build();
 
