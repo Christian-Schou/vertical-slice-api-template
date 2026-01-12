@@ -1,6 +1,6 @@
 # Vertical Slice Architecture Template
 
-This repository provides a template for building applications using the Vertical Slice Architecture with .NET 10. It includes implementations for CQRS, MediatR, global exception handling, Carter library, FluentValidation, EF Core, and the result pattern.
+This repository provides a template for building applications using the Vertical Slice Architecture with .NET 10. It includes implementations for Wolverine, global exception handling, Carter library, FluentValidation, EF Core, and FluentResults.
 
 ## Table of Contents
 
@@ -43,28 +43,29 @@ This template follows the Vertical Slice Architecture, which organizes code by f
 
 ## Features
 
-- **CQRS**: Command and Query Responsibility Segregation.
-- **MediatR Library**: Implements the mediator pattern for handling requests and notifications.
+- **Wolverine Library**: Implements the command bus pattern for handling requests and messages.
 - **Global Exception Handling**: Centralized handling of exceptions.
 - **Carter Library**: Lightweight library for building HTTP APIs.
 - **FluentValidation Library**: Validation library for .NET.
-- **Entity Framework Core**: Object-relational mapper for .NET.
-- **Result Pattern**: Standardized way of handling operation results.
+- **FluentResults Library**: Implements the Result pattern.
 - **Health Checks**: Standardized approach for monitoring and assessing the operational status of systems.
 
 ## Technologies Used
 
 - **.NET 10**
-- **CQRS**
-- **MediatR**
+- **Wolverine**
 - **Carter Library**
 - **FluentValidation**
+- **FluentResults**
 - **EF Core**
 - **HealthChecks Library**
+- **xUnit**
+- **NSubstitute**
+- **Shouldly**
 
 ## Folder Structure
 
-- **/src**: Contains the main application code.
+- **/VSATemplate**: Contains the main application code.
   - **/Features**: Each feature is organized into its own folder, promoting encapsulation.
     - **/Products**: Contains all product related files for the feature.
        - **/CreateProduct**:  Logic for creating a product.
@@ -73,12 +74,7 @@ This template follows the Vertical Slice Architecture, which organizes code by f
        - **/GetProducts**: Logic for retrieving a list of products.
        - **/UpdateProduct**: Logic for updating product details.
        - **ProductErrors**: Contains all product-related error handling.
-    - **FeatureXController.cs**: Entry point for HTTP requests related to the feature.
   - **/Abstractions**: Contains shared interfaces and contracts.
-     - **/CQRS**: Contains all CQRS abstraction interfaces.
-     - **/Errors**: Define Error class.
-     - **/ResultResponse**: Standardized response structures for API results.
-  - **/Behaviors**: Contains middleware and behaviors that apply to requests and responses.
   - **/Database**: Contains database-related code, including DB Context.
   - **/Entities**: Defines the core data models used throughout the application.
   - **/Exceptions**: Contains the global exception handler for the application.
@@ -86,7 +82,9 @@ This template follows the Vertical Slice Architecture, which organizes code by f
   - **/Migrations**: Database migration files for schema updates.
   - **Program.cs**: Application entry point.
 
-- **/tests**: Contains unit and integration tests for the features and common components.
+- **/VSATemplate.UnitTests**: Contains unit tests for the application logic.
+- **/VSATemplate.IntegrationTests**: Contains integration tests for the features.
+- **/VSATemplate.Architecture.Tests**: Contains architecture tests to enforce design rules.
 
 
 ## Setup
@@ -111,9 +109,4 @@ Contributions are what make the open-source community such an amazing place to l
 
 Distributed under the MIT License. See `LICENSE` for more information.
 
-## Support
-
-If you find this project helpful, consider buying me a coffee!
-
-[![Buy Me a Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/poorna.soysa)
-```
+This project is based on the Vertical Slice Architecture Template by Poorna Soysa. https://github.com/poorna-soysa/vertical-slice-architecture-template
