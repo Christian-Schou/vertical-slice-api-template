@@ -4,15 +4,16 @@ namespace VSATemplate.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddInfrastructureServices(this IServiceCollection services,
+        IConfiguration configuration)
     {
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
-    
+
         services.AddDatabaseServices(configuration);
         services.AddHealthCheckServices();
         services.AddExceptionHandler<GlobalExceptionHandler>();
-    
+
         return services;
     }
 
@@ -20,8 +21,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddValidatorsFromAssembly(assembly);
         services.AddCarter();
-        
+
         return services;
     }
 }
-
