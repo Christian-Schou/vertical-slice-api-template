@@ -109,4 +109,4 @@ Contributions are what make the open-source community such an amazing place to l
 
 Distributed under the MIT License. See `LICENSE` for more information.
 
-This project is based on the Vertical Slice Architecture Template by Poorna Soysa. https://github.com/poorna-soysa/vertical-slice-architecture-template
+This project is originally based on the Vertical Slice Architecture Template by Poorna Soysa. https://github.com/poorna-soysa/vertical-slice-architecture-template
