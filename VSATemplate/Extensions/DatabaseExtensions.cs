@@ -2,11 +2,11 @@
 
 public static class DatabaseExtensions
 {
-    public static IServiceCollection AddSQLDatabaseConfiguration(this IServiceCollection services,
+    public static IServiceCollection AddDatabaseServices(this IServiceCollection services,
         IConfiguration configuration)
     {
         services.AddDbContext<ApplicationDbContext>(context =>
-                    context.UseSqlServer(configuration.GetConnectionString("SQLConnection")));
+            context.UseNpgsql(configuration.GetConnectionString("Database")));
 
         return services;
     }
