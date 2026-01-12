@@ -5,13 +5,14 @@ var assembly = typeof(Program).Assembly;
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Host.UseWolverine(options => { options.UseFluentValidation(); });
+
 builder.Services
-    .AddSQLDatabaseConfiguration(builder.Configuration)
-    .AddMediatRConfiguration(assembly)
+    .AddDatabaseServices(builder.Configuration)
     .AddValidatorsFromAssembly(assembly)
     .AddCarter()
     .AddExceptionHandler<GlobalExceptionHandler>()
-    .AddHealthChecksConfiguration();
+    .AddHealthCheckServices();
 
 var app = builder.Build();
 
@@ -25,6 +26,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseHealthChecks();
 app.MapCarter();
-app.UseExceptionHandler(options => { });
+app.UseExceptionHandler(_ => { });
 
-app.Run();
+await app.RunAsync();
