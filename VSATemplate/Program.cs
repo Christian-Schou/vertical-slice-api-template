@@ -4,6 +4,7 @@ var assembly = typeof(Program).Assembly;
 
 
 builder.Host.UseWolverine(WolverineConfiguration.Configure);
+builder.Host.UseSerilog(SerilogConfiguration.Configure);
 
 builder.Services
     .AddInfrastructureServices(builder.Configuration)
@@ -20,6 +21,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseSerilogRequestLogging(); 
 app.UseHealthChecks();
 app.MapCarter();
 app.UseExceptionHandler(_ => { });
