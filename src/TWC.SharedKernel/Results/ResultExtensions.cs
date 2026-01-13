@@ -1,4 +1,6 @@
-﻿namespace TWC.API.Extensions;
+﻿﻿using FluentResults;
+
+namespace TWC.SharedKernel.Results;
 
 public static class ResultExtensions
 {
