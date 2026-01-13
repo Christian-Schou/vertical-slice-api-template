@@ -1,6 +1,8 @@
 # Vertical Slice Architecture Template
 
-This repository provides a template for building applications using the Vertical Slice Architecture with .NET 10. It includes implementations for Wolverine, global exception handling, Carter library, FluentValidation, EF Core, and FluentResults.
+This repository provides a template for building applications using the Vertical Slice Architecture with .NET 10. It
+includes implementations for Wolverine, global exception handling, Carter library, FluentValidation, EF Core, and
+FluentResults.
 
 ## Table of Contents
 
@@ -39,7 +41,8 @@ To get a local copy up and running, follow these simple steps.
 
 ## Architecture Overview
 
-This template follows the Vertical Slice Architecture, which organizes code by features rather than technical concerns. Each feature is self-contained, promoting high cohesion and low coupling.
+This template follows the Vertical Slice Architecture, which organizes code by features rather than technical concerns.
+Each feature is self-contained, promoting high cohesion and low coupling.
 
 ## Features
 
@@ -76,11 +79,13 @@ This template follows the Vertical Slice Architecture, which organizes code by f
 The application is configured to use Serilog for structured logging, replacing the default ASP.NET Core logger.
 
 **Configuration:**
+
 - Code configuration is located in `VSATemplate/Configurations/SerilogConfiguration.cs`.
 - Request logging is enabled in `Program.cs`.
 
 **Customization:**
 Adjust log levels in `appsettings.json`:
+
 ```json
 "Serilog": {
   "MinimumLevel": {
@@ -95,7 +100,8 @@ Adjust log levels in `appsettings.json`:
 
 ### Feature Flagging
 
-Feature flags are implemented using `Microsoft.FeatureManagement`, allowing you to enable/disable features without code changes.
+Feature flags are implemented using `Microsoft.FeatureManagement`, allowing you to enable/disable features without code
+changes.
 
 **1. Define Flags**
 Add flags to the `FeatureManagement` section in `appsettings.json` or `appsettings.Development.json`:
@@ -139,26 +145,25 @@ Configuration is located in `VSATemplate/Extensions/OpenTelemetryExtensions.cs`.
 ## Folder Structure
 
 - **/VSATemplate**: Contains the main application code.
-  - **/Features**: Each feature is organized into its own folder, promoting encapsulation.
-    - **/Products**: Contains all product related files for the feature.
-       - **/CreateProduct**:  Logic for creating a product.
-       - **/DeleteProduct**: Logic for deleting a product.
-       - **/GetProductById**: Logic for retrieving a product by its Id.
-       - **/GetProducts**: Logic for retrieving a list of products.
-       - **/UpdateProduct**: Logic for updating product details.
-       - **ProductErrors**: Contains all product-related error handling.
-  - **/Abstractions**: Contains shared interfaces and contracts.
-  - **/Database**: Contains database-related code, including DB Context.
-  - **/Entities**: Defines the core data models used throughout the application.
-  - **/Exceptions**: Contains the global exception handler for the application.
-  - **/Extensions**: Contains extension methods for various classes and services.
-  - **/Migrations**: Database migration files for schema updates.
-  - **Program.cs**: Application entry point.
+    - **/Features**: Each feature is organized into its own folder, promoting encapsulation.
+        - **/Products**: Contains all product related files for the feature.
+            - **/CreateProduct**:  Logic for creating a product.
+            - **/DeleteProduct**: Logic for deleting a product.
+            - **/GetProductById**: Logic for retrieving a product by its Id.
+            - **/GetProducts**: Logic for retrieving a list of products.
+            - **/UpdateProduct**: Logic for updating product details.
+            - **ProductErrors**: Contains all product-related error handling.
+    - **/Abstractions**: Contains shared interfaces and contracts.
+    - **/Database**: Contains database-related code, including DB Context.
+    - **/Entities**: Defines the core data models used throughout the application.
+    - **/Exceptions**: Contains the global exception handler for the application.
+    - **/Extensions**: Contains extension methods for various classes and services.
+    - **/Migrations**: Database migration files for schema updates.
+    - **Program.cs**: Application entry point.
 
 - **/VSATemplate.UnitTests**: Contains unit tests for the application logic.
 - **/VSATemplate.IntegrationTests**: Contains integration tests for the features.
 - **/VSATemplate.Architecture.Tests**: Contains architecture tests to enforce design rules.
-
 
 ## Setup
 
@@ -170,7 +175,8 @@ Configuration is located in `VSATemplate/Extensions/OpenTelemetryExtensions.cs`.
 
 ## Contributing
 
-Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any
+contributions you make are **greatly appreciated**.
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
@@ -182,4 +188,5 @@ Contributions are what make the open-source community such an amazing place to l
 
 Distributed under the MIT License. See `LICENSE` for more information.
 
-This project is originally based on the Vertical Slice Architecture Template by Poorna Soysa. https://github.com/poorna-soysa/vertical-slice-architecture-template
+This project is originally based on the Vertical Slice Architecture Template by Poorna
+Soysa. https://github.com/poorna-soysa/vertical-slice-architecture-template
