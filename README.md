@@ -107,7 +107,7 @@ Add flags to the `FeatureManagement` section in `appsettings.json` or `appsettin
 }
 ```
 
-**2. usage in Code**
+**2. Usage in Code**
 Inject `IFeatureManager` into your Classes, Handlers, or Services:
 
 ```csharp
