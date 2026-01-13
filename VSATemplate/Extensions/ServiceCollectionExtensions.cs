@@ -12,6 +12,7 @@ public static class ServiceCollectionExtensions
 
         services.AddDatabaseServices(configuration);
         services.AddHealthCheckServices();
+        services.AddFeatureFlagServices();
         services.AddOpenTelemetryServices(configuration);
         services.AddExceptionHandler<GlobalExceptionHandler>();
 
