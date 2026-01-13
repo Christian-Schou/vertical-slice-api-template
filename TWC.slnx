@@ -7,6 +7,7 @@
     <Folder Name="/src/">
         <Project Path="src/TWC.API/TWC.API.csproj" />
         <Project Path="src/TWC.ServiceDefaults/TWC.ServiceDefaults.csproj" />
+        <Project Path="src/TWC.SharedKernel/TWC.SharedKernel.csproj" />
     </Folder>
     <Folder Name="/tests/">
         <Project Path="tests/TWC.Architecture.Tests/TWC.Architecture.Tests.csproj" />

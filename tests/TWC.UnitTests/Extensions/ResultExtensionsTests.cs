@@ -1,6 +1,6 @@
 using FluentResults;
 using Shouldly;
-using TWC.API.Extensions;
+using TWC.SharedKernel.Results;
 
 namespace TWC.UnitTests.Extensions;
 

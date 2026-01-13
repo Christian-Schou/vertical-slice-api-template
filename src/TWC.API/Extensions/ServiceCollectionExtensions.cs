@@ -9,7 +9,6 @@ public static class ServiceCollectionExtensions
     {
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
-
         services.AddDatabaseServices(configuration);
         services.AddHealthCheckServices();
         services.AddFeatureFlagServices();
