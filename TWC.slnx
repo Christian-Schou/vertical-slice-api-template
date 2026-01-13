@@ -1,0 +1,17 @@
+<Solution>
+    <Folder Name="/solution items/">
+        <File Path="LICENSE.txt" />
+        <File Path="README.md" />
+        <File Path="REFACTORING_PLAN.md" />
+    </Folder>
+    <Folder Name="/src/">
+        <Project Path="src/TWC.API/TWC.API.csproj" />
+        <Project Path="src/TWC.ServiceDefaults/TWC.ServiceDefaults.csproj" />
+    </Folder>
+    <Folder Name="/tests/">
+        <Project Path="tests/TWC.Architecture.Tests/TWC.Architecture.Tests.csproj" />
+        <Project Path="tests/TWC.IntegrationTests/TWC.IntegrationTests.csproj" />
+        <Project Path="tests/TWC.UnitTests/TWC.UnitTests.csproj" />
+    </Folder>
+</Solution>
+
