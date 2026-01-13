@@ -118,9 +118,11 @@ public class GetProductHandler(IFeatureManager featureManager)
         if (await featureManager.IsEnabledAsync("NewProductFeature"))
         {
             // Execute new logic
+            return Result.Ok(new ProductResponse(/* ... */));
         }
 
         // Execute default logic
+        return Result.Ok(new ProductResponse(/* ... */));
     }
 }
 ```
