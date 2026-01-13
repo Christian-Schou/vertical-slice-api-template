@@ -49,6 +49,9 @@ This template follows the Vertical Slice Architecture, which organizes code by f
 - **FluentValidation Library**: Validation library for .NET.
 - **FluentResults Library**: Implements the Result pattern.
 - **Health Checks**: Standardized approach for monitoring and assessing the operational status of systems.
+- **OpenTelemetry**: Integrated observability for distributed tracing and metrics.
+- **Structured Logging (Serilog)**: Enhanced logging capabilities with Serilog.
+- **Feature Management**: Feature flagging support using Microsoft.FeatureManagement.
 
 ## Technologies Used
 
@@ -59,9 +62,77 @@ This template follows the Vertical Slice Architecture, which organizes code by f
 - **FluentResults**
 - **EF Core**
 - **HealthChecks Library**
+- **OpenTelemetry**
+- **Serilog**
+- **Microsoft.FeatureManagement**
 - **xUnit**
 - **NSubstitute**
 - **Shouldly**
+
+## Key Capabilities Guide
+
+### Structured Logging with Serilog
+
+The application is configured to use Serilog for structured logging, replacing the default ASP.NET Core logger.
+
+**Configuration:**
+- Code configuration is located in `VSATemplate/Configurations/SerilogConfiguration.cs`.
+- Request logging is enabled in `Program.cs`.
+
+**Customization:**
+Adjust log levels in `appsettings.json`:
+```json
+"Serilog": {
+  "MinimumLevel": {
+    "Default": "Information",
+    "Override": {
+      "Microsoft": "Warning",
+      "System": "Warning"
+    }
+  }
+}
+```
+
+### Feature Flagging
+
+Feature flags are implemented using `Microsoft.FeatureManagement`, allowing you to enable/disable features without code changes.
+
+**1. Define Flags**
+Add flags to the `FeatureManagement` section in `appsettings.json` or `appsettings.Development.json`:
+
+```json
+"FeatureManagement": {
+  "NewProductFeature": true,
+  "BetaFeature": false
+}
+```
+
+**2. usage in Code**
+Inject `IFeatureManager` into your Classes, Handlers, or Services:
+
+```csharp
+public class GetProductHandler(IFeatureManager featureManager)
+{
+    public async Task<Result<ProductResponse>> Handle(GetProductQuery query, CancellationToken cancellationToken)
+    {
+        if (await featureManager.IsEnabledAsync("NewProductFeature"))
+        {
+            // Execute new logic
+        }
+
+        // Execute default logic
+    }
+}
+```
+
+### OpenTelemetry
+
+OpenTelemetry is pre-configured for Tracing and Metrics.
+
+- **Tracing**: Includes ASP.NET Core, HTTP Client, Entity Framework Core, and Wolverine.
+- **Metrics**: Includes ASP.NET Core, HTTP Client, and Wolverine.
+
+Configuration is located in `VSATemplate/Extensions/OpenTelemetryExtensions.cs`.
 
 ## Folder Structure
 
