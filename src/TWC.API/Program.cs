@@ -2,6 +2,8 @@ using TWC.ServiceDefaults;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
+builder.AddDefaultPersistence<ApplicationDbContext>();
+builder.AddDefaultFeatureFlags();
 
 var assembly = typeof(Program).Assembly;
 
