@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
@@ -28,6 +30,25 @@ public static class Extensions
     public static IHostApplicationBuilder AddDefaultFeatureFlags(this IHostApplicationBuilder builder)
     {
         builder.Services.AddFeatureManagement();
+        return builder;
+    }
+
+    public static IHostApplicationBuilder AddDefaultPersistence<TContext>(this IHostApplicationBuilder builder, string connectionName = "Database")
+        where TContext : DbContext
+    {
+        builder.Services.AddDbContext<TContext>(options =>
+            options.UseNpgsql(builder.Configuration.GetConnectionString(connectionName)));
+
+        builder.Services.AddHealthChecks()
+            .AddDbContextCheck<TContext>();
+
+        return builder;
+    }
+
+    public static IHostApplicationBuilder AddDefaultFeatureFlags(this IHostApplicationBuilder builder)
+    {
+        builder.Services.AddFeatureManagement();
+        
         return builder;
     }
 
