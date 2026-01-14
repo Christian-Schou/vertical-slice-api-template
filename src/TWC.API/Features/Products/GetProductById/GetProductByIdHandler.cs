@@ -1,4 +1,6 @@
-﻿namespace TWC.API.Features.Products.GetProductById;
+﻿﻿using Marten;
+
+namespace TWC.API.Features.Products.GetProductById;
 
 public sealed record GetProductByIdQuery(Guid Id);
 
@@ -9,14 +11,12 @@ public sealed record GetProductByIdResult(
     List<string> Categories,
     decimal Price);
 
-public sealed class GetProductByIdQueryHandler(ApplicationDbContext dbContext)
+public sealed class GetProductByIdQueryHandler(IQuerySession session)
 {
     public async Task<Result<GetProductByIdResult>> Handle(GetProductByIdQuery query,
         CancellationToken cancellationToken)
     {
-        var product = await dbContext
-            .Products
-            .FirstOrDefaultAsync(d => d.Id == query.Id, cancellationToken);
+        var product = await session.LoadAsync<Product>(query.Id, cancellationToken);
 
         if (product is null) return Result.Fail<GetProductByIdResult>(ProductErrors.NotFound(query.Id));
 

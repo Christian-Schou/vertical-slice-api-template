@@ -1,14 +1,15 @@
-using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.FeatureManagement;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
 using Serilog;
+using HealthChecks.UI.Client;
 
 namespace TWC.ServiceDefaults;
 
@@ -19,7 +20,14 @@ public static class Extensions
         builder.ConfigureSerilog();
         builder.ConfigureOpenTelemetry();
         builder.ConfigureHealthChecks();
+        builder.AddDefaultFeatureFlags();
 
+        return builder;
+    }
+    
+    public static IHostApplicationBuilder AddDefaultFeatureFlags(this IHostApplicationBuilder builder)
+    {
+        builder.Services.AddFeatureManagement();
         return builder;
     }
 
@@ -56,7 +64,6 @@ public static class Extensions
             {
                 tracing.AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
-                    .AddEntityFrameworkCoreInstrumentation()
                     .AddSource("Wolverine");
             });
 
