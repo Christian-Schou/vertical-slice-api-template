@@ -5,8 +5,6 @@ using Wolverine.Marten;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
-builder.AddDefaultPersistence<ApplicationDbContext>();
-builder.AddDefaultFeatureFlags();
 
 builder.Services.AddMarten(opts =>
 {
