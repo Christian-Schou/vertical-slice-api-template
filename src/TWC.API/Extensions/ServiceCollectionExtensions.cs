@@ -1,4 +1,5 @@
 using System.Reflection;
+using JasperFx;
 using Marten;
 using Wolverine.Marten;
 
@@ -8,6 +9,17 @@ public static class ServiceCollectionExtensions
 {
     public static WebApplicationBuilder AddInfrastructureServices(this WebApplicationBuilder builder)
     {
+        builder.Host.UseWolverine(opts =>
+        {
+            opts.AutoBuildMessageStorageOnStartup = builder.Environment.IsProduction() 
+                ? AutoCreate.None 
+                : AutoCreate.CreateOrUpdate;
+                
+            opts.Policies.AutoApplyTransactions();
+            
+            opts.UseFluentValidation();
+        });
+
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
