@@ -5,6 +5,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
+using Marten;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
@@ -58,13 +59,15 @@ public static class Extensions
                 metrics.AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
                     .AddMeter("Wolverine")
+                    .AddMeter("Marten")
                     .AddRuntimeInstrumentation();
             })
             .WithTracing(tracing =>
             {
                 tracing.AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
-                    .AddSource("Wolverine");
+                    .AddSource("Wolverine")
+                    .AddSource("Marten");
             });
 
         builder.AddOpenTelemetryExporters();
@@ -84,7 +87,8 @@ public static class Extensions
     public static IHostApplicationBuilder ConfigureHealthChecks(this IHostApplicationBuilder builder)
     {
         builder.Services.AddHealthChecks()
-            .AddCheck("self", () => HealthCheckResult.Healthy(), ["live"]);
+            .AddCheck("self", () => HealthCheckResult.Healthy(), ["live"])
+            .AddCheck<MartenHealthCheck>("marten", tags: ["db", "marten"]);
 
         return builder;
     }
@@ -104,5 +108,31 @@ public static class Extensions
         });
 
         return app;
+    }
+}
+
+public class MartenHealthCheck(IDocumentStore store) : IHealthCheck
+{
+    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            await using var session = store.LightweightSession();
+            await using var command = session.Connection.CreateCommand();
+            command.CommandText = "SELECT 1";
+            
+            if (session.Connection.State != System.Data.ConnectionState.Open)
+            {
+                await session.Connection.OpenAsync(cancellationToken);
+            }
+            
+            await command.ExecuteScalarAsync(cancellationToken);
+            
+            return HealthCheckResult.Healthy();
+        }
+        catch (Exception ex)
+        {
+            return HealthCheckResult.Unhealthy("Marten database validation failed", ex);
+        }
     }
 }

@@ -10,6 +10,9 @@ builder.Services.AddMarten(opts =>
 {
     var connectionString = builder.Configuration.GetConnectionString("Database");
     opts.Connection(connectionString!);
+
+    // Track the number of events being appended to the system
+    opts.OpenTelemetry.TrackEventCounters();
 })
 .IntegrateWithWolverine();
 
