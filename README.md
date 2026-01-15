@@ -118,6 +118,7 @@ public (Result<CreateProductResult>, ProductCreatedEvent) Handle(CreateProductCo
     
     // 2. Persistence (Marten)
     session.Store(product);
+    // Note: No need to call session.SaveChanges(). Wolverine's transactional middleware handles this automatically.
 
     // 3. Return Result + Event
     // Wolverine will automatically publish 'ProductCreatedEvent' to any subscribers
@@ -228,4 +229,5 @@ Contributions are welcome!
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
 
-This project is originally based on the Vertical Slice Architecture Template by Poorna Soysa, but has been re-written. https://github.com/poorna-soysa/vertical-slice-architecture-template
+This project is originally based on the Vertical Slice Architecture Template by Poorna Soysa, but has been re-written. [Vertical Slice Architecture Template by Poorna
+Soysa](https://github.com/poorna-soysa/vertical-slice-architecture-template)
