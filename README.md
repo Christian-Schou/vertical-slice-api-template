@@ -50,6 +50,7 @@ Each feature is self-contained in the `src/TWC.API/Features` folder, promoting h
 
 - **Wolverine**: Implements the command bus pattern for handling requests and messages. It integrates deeply with Marten for outbox patterns and durable messaging.
 - **Marten**: .NET Transactional Document DB and Event Store on PostgreSQL. Replaces traditional ORMs like EF Core for a more aggregate-centric approach.
+- **Identity & Authentication**: Full ASP.NET Core Identity implementation using Marten as the store. Includes JWT Bearer authentication with Refresh Token flow.
 - **Global Exception Handling**: Centralized handling of exceptions via `GlobalExceptionHandler`.
 - **Carter**: Library for building HTTP APIs with cleaner routing registration.
 - **FluentValidation**: Robust validation rules for your commands and requests.
@@ -63,6 +64,8 @@ Each feature is self-contained in the `src/TWC.API/Features` folder, promoting h
 - **.NET 10**
 - **Wolverine**
 - **Marten (PostgreSQL)**
+- **Marten.AspNetIdentity**
+- **ASP.NET Core Identity**
 - **Carter**
 - **FluentValidation**
 - **FluentResults**
@@ -70,7 +73,7 @@ Each feature is self-contained in the `src/TWC.API/Features` folder, promoting h
 - **Serilog**
 - **Microsoft.FeatureManagement**
 - **xUnit** (Testing)
-- **FluentAssertions** (Assertions)
+- **Shouldly** (Assertions)
 - **Testcontainers** (Integration Testing)
 
 ## Folder Structure
@@ -80,6 +83,9 @@ The solution is structured as follows:
 - **src/**
     - **TWC.API**: The main entry point and "host" of the application.
         - **Features**: The heart of the application.
+            - **Auth**: Authentication features.
+                - **Login**: Endpoint, Request, Response.
+                - **Refresh**: Endpoint, Request, Response.
             - **Products**: Example feature slice.
                 - **CreateProduct**: Command, Validator, Handler, Endpoint.
                 - **GetProductById**: Query, Handler, Endpoint.
