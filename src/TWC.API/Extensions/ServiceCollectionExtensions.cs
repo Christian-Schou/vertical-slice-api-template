@@ -1,24 +1,37 @@
 using System.Reflection;
+using Marten;
+using Wolverine.Marten;
 
 namespace TWC.API.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddInfrastructureServices(this IServiceCollection services,
-        IConfiguration configuration)
+    public static WebApplicationBuilder AddInfrastructureServices(this WebApplicationBuilder builder)
     {
-        services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
-        services.AddExceptionHandler<GlobalExceptionHandler>();
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
+        builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
-        return services;
+        builder.Services.AddMarten(opts =>
+        {
+            var connectionString = builder.Configuration.GetConnectionString("Database");
+            opts.Connection(connectionString!);
+
+            // Track the number of events being appended to the system
+            opts.OpenTelemetry.TrackEventCounters();
+        })
+        .IntegrateWithWolverine();
+
+        builder.Services.AddIdentityServices(builder.Configuration);
+
+        return builder;
     }
 
-    public static IServiceCollection AddApplicationServices(this IServiceCollection services, Assembly assembly)
+    public static WebApplicationBuilder AddApplicationServices(this WebApplicationBuilder builder)
     {
-        services.AddValidatorsFromAssembly(assembly);
-        services.AddCarter();
+        builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+        builder.Services.AddCarter();
 
-        return services;
+        return builder;
     }
 }
