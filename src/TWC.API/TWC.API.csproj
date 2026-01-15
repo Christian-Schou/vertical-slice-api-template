@@ -6,6 +6,8 @@
         <PackageReference Include="FluentResults" />
         <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
         <PackageReference Include="Marten" />
+        <PackageReference Include="Marten.AspNetIdentity" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
         <PackageReference Include="Microsoft.FeatureManagement.AspNetCore" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
         <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
