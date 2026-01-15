@@ -12,12 +12,16 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
     private readonly IServiceScope _scope;
     protected readonly IDocumentSession Session;
     protected readonly IDocumentStore Store;
+    protected readonly HttpClient Client;
+    protected readonly IServiceProvider ServiceProvider;
 
     protected BaseIntegrationTest(IntegrationTestWebAppFactory factory)
     {
         _scope = factory.Services.CreateScope();
         Store = _scope.ServiceProvider.GetRequiredService<IDocumentStore>();
         Session = _scope.ServiceProvider.GetRequiredService<IDocumentSession>();
+        Client = factory.CreateClient();
+        ServiceProvider = _scope.ServiceProvider;
     }
 
     public async Task InitializeAsync()

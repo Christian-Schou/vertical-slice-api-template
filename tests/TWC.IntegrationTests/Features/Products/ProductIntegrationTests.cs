@@ -1,6 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
-using FluentAssertions;
+using Shouldly;
 using TWC.API.Entities;
 using TWC.API.Features.Products.CreateProduct;
 using TWC.API.Features.Products.GetProductById;
@@ -25,15 +25,15 @@ public class ProductIntegrationTests(IntegrationTestWebAppFactory factory) : Bas
         var response = await _client.PostAsJsonAsync("api/products", request);
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.Created);
+        response.StatusCode.ShouldBe(HttpStatusCode.Created);
 
         var productResponse = await response.Content.ReadFromJsonAsync<CreateProductResult>();
-        productResponse.Should().NotBeNull();
-        productResponse!.Id.Should().NotBeEmpty();
+        productResponse.ShouldNotBeNull();
+        productResponse.Id.ShouldNotBe(Guid.Empty);
 
         var dbProduct = await Session.LoadAsync<Product>(productResponse.Id);
-        dbProduct.Should().NotBeNull();
-        dbProduct!.Name.Should().Be(request.Name);
+        dbProduct.ShouldNotBeNull();
+        dbProduct.Name.ShouldBe(request.Name);
     }
 
     [Fact]
@@ -53,12 +53,12 @@ public class ProductIntegrationTests(IntegrationTestWebAppFactory factory) : Bas
         var response = await _client.GetAsync($"api/products/{product.Id}");
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
 
         var returnedProduct = await response.Content.ReadFromJsonAsync<GetProductByIdResult>();
-        returnedProduct.Should().NotBeNull();
-        returnedProduct!.Id.Should().Be(product.Id);
-        returnedProduct.Name.Should().Be(product.Name);
+        returnedProduct.ShouldNotBeNull();
+        returnedProduct.Id.ShouldBe(product.Id);
+        returnedProduct.Name.ShouldBe(product.Name);
     }
 
     [Fact]
@@ -70,9 +70,7 @@ public class ProductIntegrationTests(IntegrationTestWebAppFactory factory) : Bas
         var response = await _client.GetAsync($"api/products/{Guid.NewGuid()}");
 
         // Assert
-        // Checking implementation again... 
-        // Logic was: if (product is null) return Result.Fail(Errors.NotFound) -> Results.BadRequest(error)
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
     }
 
     [Fact]
@@ -87,11 +85,11 @@ public class ProductIntegrationTests(IntegrationTestWebAppFactory factory) : Bas
         var response = await _client.GetAsync("api/products");
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
         var products = await response.Content.ReadFromJsonAsync<List<GetProductsResult>>();
         
-        products.Should().NotBeNull();
-        products!.Count.Should().BeGreaterThanOrEqualTo(2);
+        products.ShouldNotBeNull();
+        products.Count.ShouldBeGreaterThanOrEqualTo(2);
     }
 
     [Fact]
@@ -109,12 +107,13 @@ public class ProductIntegrationTests(IntegrationTestWebAppFactory factory) : Bas
         var response = await _client.PutAsJsonAsync("api/products", updateRequest);
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
 
         using var querySession = Store.QuerySession();
         var refreshedProduct = await querySession.LoadAsync<Product>(product.Id);
-        refreshedProduct!.Name.Should().Be("New Name");
-        refreshedProduct.Price.Should().Be(60);
+        refreshedProduct.ShouldNotBeNull();
+        refreshedProduct.Name.ShouldBe("New Name");
+        refreshedProduct.Price.ShouldBe(60);
     }
 
     [Fact]
@@ -129,10 +128,11 @@ public class ProductIntegrationTests(IntegrationTestWebAppFactory factory) : Bas
         var response = await _client.DeleteAsync($"api/products/{product.Id}");
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
 
         using var querySession = Store.QuerySession();
         var deletedProduct = await querySession.LoadAsync<Product>(product.Id);
-        deletedProduct.Should().BeNull();
+        deletedProduct.ShouldBeNull();
     }
 }
+
