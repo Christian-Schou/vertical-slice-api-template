@@ -85,6 +85,7 @@ The solution is structured as follows:
         - **Features**: The heart of the application.
             - **Auth**: Authentication features.
                 - **Login**: Endpoint, Request, Response.
+                - **Register**: Endpoint, Request.
                 - **Refresh**: Endpoint, Request, Response.
             - **Products**: Example feature slice.
                 - **CreateProduct**: Command, Validator, Handler, Endpoint.
