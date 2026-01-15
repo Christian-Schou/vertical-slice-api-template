@@ -118,15 +118,8 @@ public class MartenHealthCheck(IDocumentStore store) : IHealthCheck
         try
         {
             await using var session = store.LightweightSession();
-            await using var command = session.Connection.CreateCommand();
-            command.CommandText = "SELECT 1";
-            
-            if (session.Connection.State != System.Data.ConnectionState.Open)
-            {
-                await session.Connection.OpenAsync(cancellationToken);
-            }
-            
-            await command.ExecuteScalarAsync(cancellationToken);
+            // Just running a simple query to verify connectivity
+            await session.QueryAsync<int>("SELECT 1", cancellationToken);
             
             return HealthCheckResult.Healthy();
         }
