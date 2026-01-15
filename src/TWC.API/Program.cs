@@ -2,12 +2,8 @@ using TWC.ServiceDefaults;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
-
-builder.Host.ConfigureWolverine();
-
 builder.AddInfrastructureServices();
 builder.AddApplicationServices();
-
 
 var app = builder.Build();
 
