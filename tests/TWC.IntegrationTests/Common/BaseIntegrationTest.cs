@@ -1,7 +1,8 @@
-using Microsoft.EntityFrameworkCore;
+using Marten;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Npgsql;
 using Respawn;
-using TWC.API.Database;
 
 namespace TWC.IntegrationTests.Common;
 
@@ -9,19 +10,22 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebAppF
 {
     private static Respawner? _respawner;
     private readonly IServiceScope _scope;
-    protected readonly ApplicationDbContext DbContext;
+    protected readonly IDocumentSession Session;
+    protected readonly IDocumentStore Store;
 
     protected BaseIntegrationTest(IntegrationTestWebAppFactory factory)
     {
         _scope = factory.Services.CreateScope();
-        DbContext = _scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-        DbContext.Database.EnsureCreated();
+        Store = _scope.ServiceProvider.GetRequiredService<IDocumentStore>();
+        Session = _scope.ServiceProvider.GetRequiredService<IDocumentSession>();
     }
 
     public async Task InitializeAsync()
     {
-        var connection = DbContext.Database.GetDbConnection();
+        var configuration = _scope.ServiceProvider.GetRequiredService<IConfiguration>();
+        var connectionString = configuration.GetConnectionString("Database");
+        
+        using var connection = new NpgsqlConnection(connectionString);
         await connection.OpenAsync();
 
         if (_respawner == null)

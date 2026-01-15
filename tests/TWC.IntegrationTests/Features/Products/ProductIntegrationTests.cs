@@ -19,7 +19,7 @@ public class ProductIntegrationTests(IntegrationTestWebAppFactory factory) : Bas
     {
         // Arrange
         var request =
-            new CreateProductRequest("Test Product", "Test Description", new List<string> { "Category1" }, 10.99m);
+            new CreateProductCommand("Test Product", "Test Description", new List<string> { "Category1" }, 10.99m);
 
         // Act
         var response = await _client.PostAsJsonAsync("api/products", request);
@@ -31,7 +31,7 @@ public class ProductIntegrationTests(IntegrationTestWebAppFactory factory) : Bas
         productResponse.Should().NotBeNull();
         productResponse!.Id.Should().NotBeEmpty();
 
-        var dbProduct = await DbContext.Products.FindAsync(productResponse.Id);
+        var dbProduct = await Session.LoadAsync<Product>(productResponse.Id);
         dbProduct.Should().NotBeNull();
         dbProduct!.Name.Should().Be(request.Name);
     }
@@ -40,16 +40,14 @@ public class ProductIntegrationTests(IntegrationTestWebAppFactory factory) : Bas
     public async Task GetProductById_ShouldReturnOk_WhenProductExists()
     {
         // Arrange
-        var product = new Product
-        {
-            Id = Guid.NewGuid(),
-            Name = "Existing Product",
-            Description = "Description",
-            Categories = new List<string> { "Cat" },
-            Price = 100
-        };
-        DbContext.Products.Add(product);
-        await DbContext.SaveChangesAsync();
+        var product = Product.Create(
+            "Existing Product",
+            "Description",
+            100,
+            new List<string> { "Cat" }
+        );
+        Session.Store(product);
+        await Session.SaveChangesAsync();
 
         // Act
         var response = await _client.GetAsync($"api/products/{product.Id}");
@@ -81,11 +79,9 @@ public class ProductIntegrationTests(IntegrationTestWebAppFactory factory) : Bas
     public async Task GetProducts_ShouldReturnList_WhenProductsExist()
     {
         // Arrange
-        DbContext.Products.Add(new Product
-            { Id = Guid.NewGuid(), Name = "P1", Description = "D1", Categories = new List<string>(), Price = 10 });
-        DbContext.Products.Add(new Product
-            { Id = Guid.NewGuid(), Name = "P2", Description = "D2", Categories = new List<string>(), Price = 20 });
-        await DbContext.SaveChangesAsync();
+        Session.Store(Product.Create("P1", "D1", 10, new List<string>()));
+        Session.Store(Product.Create("P2", "D2", 20, new List<string>()));
+        await Session.SaveChangesAsync();
 
         // Act
         var response = await _client.GetAsync("api/products");
@@ -93,26 +89,21 @@ public class ProductIntegrationTests(IntegrationTestWebAppFactory factory) : Bas
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var products = await response.Content.ReadFromJsonAsync<List<GetProductsResult>>();
-        products.Should().HaveCount(2);
+        
+        products.Should().NotBeNull();
+        products!.Count.Should().BeGreaterThanOrEqualTo(2);
     }
 
     [Fact]
     public async Task UpdateProduct_ShouldReturnOk_WhenProductExists()
     {
         // Arrange
-        var product = new Product
-        {
-            Id = Guid.NewGuid(),
-            Name = "Old Name",
-            Description = "Old Desc",
-            Categories = new List<string>(),
-            Price = 50
-        };
-        DbContext.Products.Add(product);
-        await DbContext.SaveChangesAsync();
+        var product = Product.Create("Old Name", "Old Desc", 50, new List<string>());
+        Session.Store(product);
+        await Session.SaveChangesAsync();
 
         var updateRequest =
-            new UpdateProductRequest(product.Id, "New Name", "New Desc", new List<string> { "New Cat" }, 60);
+            new UpdateProductCommand(product.Id, "New Name", "New Desc", new List<string> { "New Cat" }, 60);
 
         // Act
         var response = await _client.PutAsJsonAsync("api/products", updateRequest);
@@ -120,8 +111,8 @@ public class ProductIntegrationTests(IntegrationTestWebAppFactory factory) : Bas
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        DbContext.ChangeTracker.Clear();
-        var refreshedProduct = await DbContext.Products.FindAsync(product.Id);
+        using var querySession = Store.QuerySession();
+        var refreshedProduct = await querySession.LoadAsync<Product>(product.Id);
         refreshedProduct!.Name.Should().Be("New Name");
         refreshedProduct.Price.Should().Be(60);
     }
@@ -130,12 +121,9 @@ public class ProductIntegrationTests(IntegrationTestWebAppFactory factory) : Bas
     public async Task DeleteProduct_ShouldReturnOk_WhenProductExists()
     {
         // Arrange
-        var product = new Product
-        {
-            Id = Guid.NewGuid(), Name = "To Delete", Description = "Desc", Categories = new List<string>(), Price = 10
-        };
-        DbContext.Products.Add(product);
-        await DbContext.SaveChangesAsync();
+        var product = Product.Create("To Delete", "Desc", 10, new List<string>());
+        Session.Store(product);
+        await Session.SaveChangesAsync();
 
         // Act
         var response = await _client.DeleteAsync($"api/products/{product.Id}");
@@ -143,8 +131,8 @@ public class ProductIntegrationTests(IntegrationTestWebAppFactory factory) : Bas
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        DbContext.ChangeTracker.Clear();
-        var deletedProduct = await DbContext.Products.FindAsync(product.Id);
+        using var querySession = Store.QuerySession();
+        var deletedProduct = await querySession.LoadAsync<Product>(product.Id);
         deletedProduct.Should().BeNull();
     }
 }

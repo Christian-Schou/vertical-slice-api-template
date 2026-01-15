@@ -1,4 +1,6 @@
-﻿namespace TWC.API.Features.Products.GetProducts;
+﻿﻿using Marten;
+
+namespace TWC.API.Features.Products.GetProducts;
 
 public sealed record GetProductsQuery;
 
@@ -9,13 +11,13 @@ public sealed record GetProductsResult(
     List<string> Categories,
     decimal Price);
 
-public sealed class GetProductsQueryHandler(ApplicationDbContext dbContext)
+public sealed class GetProductsQueryHandler(IQuerySession session)
 {
     public async Task<Result<IEnumerable<GetProductsResult>>> Handle(GetProductsQuery query,
         CancellationToken cancellationToken)
     {
-        var products = await dbContext
-            .Products
+        var products = await session
+            .Query<Product>()
             .ToListAsync(cancellationToken);
 
         return products.Select(item =>

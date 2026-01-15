@@ -1,4 +1,6 @@
-﻿namespace TWC.API.Features.Products.CreateProduct;
+﻿﻿﻿﻿using Marten;
+
+namespace TWC.API.Features.Products.CreateProduct;
 
 public sealed record CreateProductCommand(
     string Name,
@@ -28,24 +30,19 @@ public sealed class CreateProductCommandValidator
     }
 }
 
-public sealed class CreateProductCommandHandler(ApplicationDbContext dbContext)
+public sealed class CreateProductCommandHandler(IDocumentSession session)
 {
-    public async Task<Result<CreateProductResult>> Handle(CreateProductCommand command,
-        CancellationToken cancellationToken)
+    public (Result<CreateProductResult>, ProductCreatedEvent) Handle(CreateProductCommand command)
     {
-        var product = new Product
-        {
-            Name = command.Name,
-            Description = command.Description,
-            Categories = command.Categories,
-            Price = command.Price,
-            LastUpdatedOnUtc = DateTime.UtcNow
-        };
+        var product = Product.Create(
+            command.Name,
+            command.Description,
+            command.Price,
+            command.Categories
+        );
 
-        dbContext.Products.Add(product);
+        session.Store(product);
 
-        await dbContext.SaveChangesAsync(cancellationToken);
-
-        return new CreateProductResult(product.Id);
+        return (new CreateProductResult(product.Id), new ProductCreatedEvent(product.Id));
     }
 }

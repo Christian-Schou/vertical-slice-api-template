@@ -2,7 +2,6 @@
     <Folder Name="/solution items/">
         <File Path="LICENSE.txt" />
         <File Path="README.md" />
-        <File Path="REFACTORING_PLAN.md" />
     </Folder>
     <Folder Name="/src/">
         <Project Path="src/TWC.API/TWC.API.csproj" />

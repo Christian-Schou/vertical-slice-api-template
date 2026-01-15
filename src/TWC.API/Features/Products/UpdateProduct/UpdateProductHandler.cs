@@ -1,4 +1,6 @@
-﻿namespace TWC.API.Features.Products.UpdateProduct;
+﻿﻿﻿using Marten;
+
+namespace TWC.API.Features.Products.UpdateProduct;
 
 public sealed record UpdateProductCommand(
     Guid Id,
@@ -29,14 +31,12 @@ public sealed class UpdateProductCommandValidator :
     }
 }
 
-public sealed class UpdateProductCommandHandler(ApplicationDbContext dbContext)
+public sealed class UpdateProductCommandHandler(IDocumentSession session)
 {
     public async Task<Result<UpdateProductResult>> Handle(UpdateProductCommand command,
         CancellationToken cancellationToken)
     {
-        var product = await dbContext
-            .Products
-            .FirstOrDefaultAsync(p => p.Id == command.Id, cancellationToken);
+        var product = await session.LoadAsync<Product>(command.Id, cancellationToken);
 
         if (product is null) return Result.Fail<UpdateProductResult>(ProductErrors.NotFound(command.Id));
 
@@ -46,7 +46,7 @@ public sealed class UpdateProductCommandHandler(ApplicationDbContext dbContext)
         product.Price = command.Price;
         product.LastUpdatedOnUtc = DateTime.UtcNow;
 
-        await dbContext.SaveChangesAsync(cancellationToken);
+        session.Store(product);
 
         return new UpdateProductResult(true);
     }

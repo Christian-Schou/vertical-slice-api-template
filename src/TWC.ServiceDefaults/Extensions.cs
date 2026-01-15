@@ -1,12 +1,11 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
+using Marten;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
@@ -22,26 +21,14 @@ public static class Extensions
         builder.ConfigureSerilog();
         builder.ConfigureOpenTelemetry();
         builder.ConfigureHealthChecks();
+        builder.AddDefaultFeatureFlags();
 
         return builder;
     }
-
-    public static IHostApplicationBuilder AddDefaultPersistence<TContext>(this IHostApplicationBuilder builder, string connectionName = "Database")
-        where TContext : DbContext
-    {
-        builder.Services.AddDbContext<TContext>(options =>
-            options.UseNpgsql(builder.Configuration.GetConnectionString(connectionName)));
-
-        builder.Services.AddHealthChecks()
-            .AddDbContextCheck<TContext>();
-
-        return builder;
-    }
-
+    
     public static IHostApplicationBuilder AddDefaultFeatureFlags(this IHostApplicationBuilder builder)
     {
         builder.Services.AddFeatureManagement();
-        
         return builder;
     }
 
@@ -72,14 +59,15 @@ public static class Extensions
                 metrics.AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
                     .AddMeter("Wolverine")
+                    .AddMeter("Marten")
                     .AddRuntimeInstrumentation();
             })
             .WithTracing(tracing =>
             {
                 tracing.AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
-                    .AddEntityFrameworkCoreInstrumentation()
-                    .AddSource("Wolverine");
+                    .AddSource("Wolverine")
+                    .AddSource("Marten");
             });
 
         builder.AddOpenTelemetryExporters();
@@ -99,7 +87,8 @@ public static class Extensions
     public static IHostApplicationBuilder ConfigureHealthChecks(this IHostApplicationBuilder builder)
     {
         builder.Services.AddHealthChecks()
-            .AddCheck("self", () => HealthCheckResult.Healthy(), ["live"]);
+            .AddCheck("self", () => HealthCheckResult.Healthy(), ["live"])
+            .AddCheck<MartenHealthCheck>("marten", tags: ["db", "marten"]);
 
         return builder;
     }
@@ -119,5 +108,24 @@ public static class Extensions
         });
 
         return app;
+    }
+}
+
+public class MartenHealthCheck(IDocumentStore store) : IHealthCheck
+{
+    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            await using var session = store.LightweightSession();
+            // Just running a simple query to verify connectivity
+            await session.QueryAsync<int>("SELECT 1", cancellationToken);
+            
+            return HealthCheckResult.Healthy();
+        }
+        catch (Exception ex)
+        {
+            return HealthCheckResult.Unhealthy("Marten database validation failed", ex);
+        }
     }
 }
